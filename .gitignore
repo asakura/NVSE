@@ -406,4 +406,4 @@ nvse/enc_temp_folder/
 *.7z
 
 # Nix build output
-/result
+/result*
