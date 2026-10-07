@@ -10,6 +10,12 @@ stdenvNoCC.mkDerivation {
 
   src = lib.cleanSource ../.;
 
+  # out: the release archive's files. dev: headers for plugins, and import libraries.
+  outputs = [
+    "out"
+    "dev"
+  ];
+
   strictDeps = true;
   nativeBuildInputs = tools.toolchain;
 
@@ -33,7 +39,20 @@ stdenvNoCC.mkDerivation {
   installPhase = ''
     runHook preInstall
     meson install -C build --no-rebuild
-    rm "$out"/*.lib
+
+    # Like the release archive, out has no import libraries.
+    mkdir -p "$dev/lib"
+    mv "$out"/*.lib "$dev/lib"
+
+    # Laid out for -I$dev/include, matching the include roots of the solution:
+    # "nvse/PluginAPI.h", "common/ITypes.h", "Algohol/paramTypes.h".
+    installHeaders() {
+      (cd "$1" && find . -type f \( -name '*.h' -o -name '*.inc' \) -exec install -Dm444 {} "$2/{}" \;)
+    }
+    installHeaders nvse/nvse "$dev/include/nvse"
+    installHeaders common "$dev/include/common"
+    installHeaders nvse/Algohol "$dev/include/Algohol"
+
     runHook postInstall
   '';
 
