@@ -33,7 +33,7 @@ __declspec(naked) void* __fastcall Pool_Alloc(UInt32 size)
 		cmp		ecx, MAX_BLOCK_SIZE
 		jbe		doCache
 		push	ecx
-		call	_malloc_base
+		call	ASM_MALLOC_BASE
 		pop		ecx
 		retn
 	minSize:
@@ -67,7 +67,7 @@ __declspec(naked) void* __fastcall Pool_Alloc(UInt32 size)
 		sub		ecx, edx
 		add		ecx, 8
 		push	ecx
-		call	_malloc_base
+		call	ASM_MALLOC_BASE
 		pop		ecx
 		pop		ecx
 		sub		ecx, 2
@@ -122,7 +122,7 @@ __declspec(naked) void __fastcall Pool_Free(void *pBlock, UInt32 size)
 		ALIGN 16
 	doFree:
 		push	ecx
-		call	_free_base
+		call	ASM_FREE_BASE
 		pop		ecx
 		retn
 	}
@@ -161,7 +161,7 @@ __declspec(naked) void* __fastcall Pool_Realloc(void *pBlock, UInt32 curSize, UI
 	doRealloc:
 		push	ecx
 		push	eax
-		call	_realloc_base
+		call	ASM_REALLOC_BASE
 		add		esp, 8
 		retn	4
 	}
