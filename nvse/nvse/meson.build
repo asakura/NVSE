@@ -104,6 +104,9 @@ nvse_args = common_args + [
   '-DNVSE_EXPORTS',
   '-DNVSE_CORE',
   '/FInvse/prefix.h',
+  # OmitFramePointers=false in Release and Release CS. Hooks find the game caller's frame
+  # through GetParentBasePtr, which reads the ebp saved by their own prologue.
+  '/Oy-',
 ]
 
 # Release|Win32: the game runtime.
